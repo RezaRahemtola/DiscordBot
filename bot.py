@@ -17,8 +17,9 @@ async def on_message(message):
                 count += 1
     
         newName = re.sub("\d+", str(count), message.channel.name)
-
+        print("Updating name to "+newName)
         await message.channel.edit(name=newName)
+        print("Name updated to "+newName)
 
 
     elif str(message.author) == "Reza#4176" and "watch-later" in message.channel.name:
@@ -31,6 +32,7 @@ async def on_message(message):
         newName = re.sub("\d+", str(count), message.channel.name)
         print("Updating name to "+newName)
         await message.channel.edit(name=newName)
+        print("Name updated to "+newName)
 
 
 
