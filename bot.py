@@ -2,6 +2,10 @@ import discord
 import re
 import os
 
+# Importing environment variables for local usage
+from dotenv import load_dotenv
+load_dotenv("./variables.env")
+
 client = discord.Client()
 
 @client.event
@@ -10,31 +14,30 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if str(message.author) == "YAGPDB.xyz#8760" and "uploaded a new youtube video!" in message.content:
+    await updateChannelName(message, "uploaded a new youtube video!")
+    await updateChannelName(message, "-watch-later-")
+
+    if "-update" in message.content and "admin" in message.channel.name:
+        channelsID = os.environ["CHANNELS_ID"].split(", ")
+        for id in channelsID:
+            channel = discord.utils.get(client.get_all_channels(), id=int(id))
+            await updateChannelName(message, "-", channel)
+        await message.channel.send("Channels successfully updated !")
+
+
+async def updateChannelName(message, content, channel=None):
+    if channel is None:
+        channel = message.channel
+
+    if content in message.content or content in channel.name:
         count = 0
-
-        async for msg in message.channel.history():
-            if str(msg.author) == "YAGPDB.xyz#8760":
-                count += 1
-    
-        newName = re.sub("\d+", str(count), message.channel.name)
-        print("Updating name to "+newName)
-        await message.channel.edit(name=newName)
-        print("Name updated to "+newName)
-
-
-    elif str(message.author) == "Reza#4176" and "watch-later" in message.channel.name:
-        count = 0
-
-        async for msg in message.channel.history():
-            if str(msg.author) == "Reza#4176":
-                count += 1
-    
-        newName = re.sub("\d+", str(count), message.channel.name)
-        print("Updating name to "+newName)
-        await message.channel.edit(name=newName)
-        print("Name updated to "+newName)
-
+        async for msg in channel.history():
+            count += 1
+        newName = re.sub("\d+", str(count), channel.name)
+        if newName != channel.name:
+            print(f"Updating name to {newName} (previously {channel.name})")
+            await channel.edit(name=newName)
+            print("Name updated to "+newName)
 
 
 client.run(os.environ['BOT_TOKEN'])
