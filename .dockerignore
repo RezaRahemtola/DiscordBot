@@ -1,0 +1,11 @@
+# Node
+node_modules/
+dist/
+
+# Git
+.gitignore
+
+# Infra
+.dockerignore
+Dockerfile
+docker-compose.yml
