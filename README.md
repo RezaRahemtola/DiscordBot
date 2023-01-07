@@ -1,2 +1,3 @@
-# DiscordBot
-A simple bot for my personal Discord server
+# Discord bot
+
+A simple bot for my personal discord server

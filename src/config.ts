@@ -6,4 +6,6 @@ const env = (name: string, required = true) => get(name).required(required);
 
 const BOT_TOKEN = env("BOT_TOKEN").asString();
 
-export default BOT_TOKEN;
+const COUNTER_CHANNEL_IDS = env("COUNTER_CHANNEL_IDS").asArray();
+
+export { BOT_TOKEN, COUNTER_CHANNEL_IDS };
