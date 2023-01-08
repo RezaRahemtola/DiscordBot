@@ -23,4 +23,4 @@ jobs:
           private_key: ${{ secrets.SSH_KEY }}
           scp_source: .
           scp_target: ${{ secrets.SCP_TARGET }}
-          after_script: cd ${{ secrets.SCP_TARGET }} && cp ~/.config/.env.discord-bot .env && docker compose up --build -d
+          after_script: cd ${{ secrets.SCP_TARGET }} && cp ${{ secrets.ENVIRONMENT_PATH }} .env && docker compose up --build -d
