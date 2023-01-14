@@ -3,5 +3,6 @@ version: '3.8'
 services:
   discord-bot:
     build: .
+    container_name: discord-bot
     env_file:
       - .env
