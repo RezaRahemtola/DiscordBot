@@ -1,21 +1,17 @@
-// Require the necessary discord.js classes
-import { Client, Events, GatewayIntentBits, Message, PartialMessage, TextChannel } from "discord.js";
+import { Events, Message, PartialMessage } from "discord.js";
 
-import { BOT_TOKEN, COUNTER_CHANNEL_IDS } from "./config";
-
-// Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+import { COUNTER_CHANNEL_IDS } from "./config";
+import checkYoutubeVideos from "./youtube";
+import client from "./client";
+import isTextChannel from "./utils";
 
 // When the client is ready, run this code (only once)
 // We use 'c' for the event parameter to keep it separate from the already defined 'client'
-client.once(Events.ClientReady, (c) => {
+client.once(Events.ClientReady, async (c) => {
 	console.log(`Ready! Logged in as ${c.user.tag}`);
+	checkYoutubeVideos();
+	setInterval(checkYoutubeVideos, 300 * 1000);
 });
-
-// Log in to Discord with your client's token
-client.login(BOT_TOKEN);
-
-const isTextChannel = (channel: any): channel is TextChannel => channel?.name;
 
 async function updateMessageCounterChannel(message: Message | PartialMessage) {
 	if (COUNTER_CHANNEL_IDS.includes(message.channelId) && isTextChannel(message.channel)) {
@@ -27,9 +23,9 @@ async function updateMessageCounterChannel(message: Message | PartialMessage) {
 }
 
 client.on(Events.MessageCreate, async (message) => {
-	updateMessageCounterChannel(message);
+	await updateMessageCounterChannel(message);
 });
 
 client.on(Events.MessageDelete, async (message) => {
-	updateMessageCounterChannel(message);
+	await updateMessageCounterChannel(message);
 });
