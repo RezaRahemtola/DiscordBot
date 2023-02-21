@@ -7,9 +7,11 @@ COPY package-lock.json .
 
 RUN npm install
 
-COPY src src
 COPY tsconfig.json .
+COPY prisma prisma
+COPY src src
 
+RUN npx prisma generate
 RUN npm run build
 
 
@@ -23,6 +25,7 @@ COPY .env .
 
 RUN npm install --omit=dev
 
+COPY --from=builder /app/node_modules/.prisma /app/node_modules/.prisma
 COPY --from=builder /app/dist dist
 
 ENTRYPOINT ["npm", "run"]

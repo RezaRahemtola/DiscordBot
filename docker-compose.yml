@@ -6,3 +6,19 @@ services:
     container_name: discord-bot
     env_file:
       - .env
+  database:
+    container_name: discord-bot_database
+    image: postgres:15-alpine
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - db_volume:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+volumes:
+  db_volume:
