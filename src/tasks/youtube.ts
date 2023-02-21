@@ -1,9 +1,10 @@
 import Parser from "rss-parser";
 import { z } from "zod";
-import prisma from "./db/client";
-import { YTB_CHANNEL_IDS, YTB_DISCORD_CHANNEL_ID } from "./config";
-import client from "./client";
-import isTextChannel from "./utils";
+import { Events } from "discord.js";
+import prisma from "../db/client";
+import { YTB_CHANNEL_IDS, YTB_DISCORD_CHANNEL_ID } from "../config";
+import client from "../client";
+import isTextChannel from "../utils";
 
 const parser = new Parser();
 
@@ -23,12 +24,12 @@ async function checkVideos(rssURL: string) {
 	// If there isn't any video, return
 	if (!lastVideo) return undefined;
 
-	console.table(lastVideo);
 	const dbVideo = await prisma.videos.findUnique({ where: { id: lastVideo.id } });
 	if (dbVideo) return undefined;
 
 	return lastVideo;
 }
+
 async function checkYoutubeVideos() {
 	const schema = z.object({
 		id: z.string(),
@@ -48,7 +49,7 @@ async function checkYoutubeVideos() {
 
 			const channel = client.channels.cache.get(YTB_DISCORD_CHANNEL_ID);
 			if (!channel || !isTextChannel(channel)) {
-				console.log("[ERR] | Channel not found");
+				console.log(`[YouTube][${channelId}] Channel not found`);
 				return;
 			}
 			channel.send({ content: `${video.author} just uploaded a video, go check it out! ${video.link}` });
@@ -58,4 +59,11 @@ async function checkYoutubeVideos() {
 	});
 }
 
-export default checkYoutubeVideos;
+const setupYoutube = () => {
+	client.once(Events.ClientReady, async () => {
+		checkYoutubeVideos();
+		setInterval(checkYoutubeVideos, 300 * 1000);
+	});
+};
+
+export default setupYoutube;
