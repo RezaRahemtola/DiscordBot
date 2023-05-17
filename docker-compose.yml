@@ -6,6 +6,7 @@ services:
     container_name: discord-bot
     env_file:
       - .env
+    restart: always
   database:
     container_name: discord-bot_database
     image: postgres:15-alpine
@@ -19,6 +20,7 @@ services:
       - db_volume:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
+    restart: always
 
 volumes:
   db_volume:
