@@ -11,7 +11,7 @@ const rest = new REST().setToken(BOT_TOKEN);
 		console.log("[INIT] Started refreshing application (/) commands.");
 
 		await rest.put(Routes.applicationGuildCommands(APP_ID, GUILD_ID), {
-			body: commands.map((c) => c.toJSON())
+			body: commands.map((c) => c.toJSON()),
 		});
 
 		console.log("[INIT] Successfully reloaded application (/) commands and permissions.");

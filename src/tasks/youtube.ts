@@ -37,7 +37,7 @@ const checkYoutubeVideos = async () => {
 		title: z.string(),
 		author: z.string(),
 		pubDate: z.string(),
-		link: z.string()
+		link: z.string(),
 	});
 
 	await Promise.all(

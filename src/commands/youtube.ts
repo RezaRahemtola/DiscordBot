@@ -14,12 +14,12 @@ const listYoutube = async (interaction: ChatInputCommandInteraction) => {
 	await interaction.reply({ content: "Loading..." });
 
 	const schema = z.object({
-		items: ZSchemaResponseItems
+		items: ZSchemaResponseItems,
 	});
 
 	try {
 		const response = await axios.get("https://www.googleapis.com/youtube/v3/channels", {
-			params: { key: YTB_API_KEY, part: "snippet", id: YTB_CHANNEL_IDS.join(",") }
+			params: { key: YTB_API_KEY, part: "snippet", id: YTB_CHANNEL_IDS.join(",") },
 		});
 		const data = schema.parse(response.data);
 		const channels = formatChannels(data.items);
