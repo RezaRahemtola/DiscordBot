@@ -28,6 +28,8 @@ RUN npm install --omit=dev
 COPY --from=builder /app/node_modules/.prisma /app/node_modules/.prisma
 COPY --from=builder /app/dist dist
 
+RUN node dist/deploy-commands.js
+
 ENTRYPOINT ["npm", "run"]
 
 CMD ["start:prod"]

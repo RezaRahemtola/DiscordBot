@@ -1,5 +1,5 @@
-import { TextChannel } from "discord.js";
+import { Channel, TextChannel } from "discord.js";
 
-const isTextChannel = (channel: any): channel is TextChannel => channel?.name;
+const isTextChannel = (channel: Channel): channel is TextChannel => (channel as TextChannel).name !== undefined;
 
 export default isTextChannel;
