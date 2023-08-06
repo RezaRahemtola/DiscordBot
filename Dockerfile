@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json .
 COPY package-lock.json .
 
-RUN npm install
+RUN npm ci
 
 COPY tsconfig.json .
 COPY prisma prisma
@@ -23,7 +23,7 @@ COPY package.json .
 COPY package-lock.json .
 COPY .env .
 
-RUN npm install --omit=dev
+RUN npm ci --production
 
 COPY --from=builder /app/node_modules/.prisma /app/node_modules/.prisma
 COPY --from=builder /app/dist dist
