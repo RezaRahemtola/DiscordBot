@@ -54,6 +54,20 @@ const addSubscription = async (interaction: ChatInputCommandInteraction) => {
 	}
 };
 
+const removeSubscription = async (interaction: ChatInputCommandInteraction) => {
+	await interaction.reply({ content: "Loading..." });
+
+	const channelId = interaction.options.getString("channel-id")!;
+
+	try {
+		await prisma.youtubeChannelSubscription.delete({ where: { id: channelId } });
+		await interaction.reply({ content: "Channel successfully removed." });
+	} catch (error) {
+		console.error(`[YouTube] Remove subscription - ${error}`);
+		await interaction.editReply("An unknown error occurred, try again or contact the administrator.");
+	}
+};
+
 const setupYoutube = () => {
 	client.on(Events.InteractionCreate, async (interaction: Interaction) => {
 		if (interaction.guild === null || !interaction.isChatInputCommand()) return;
@@ -62,6 +76,8 @@ const setupYoutube = () => {
 			await listYoutube(interaction);
 		} else if (interaction.commandName === "youtube-add-subscription") {
 			await addSubscription(interaction);
+		} else if (interaction.commandName === "youtube-remove-subscription") {
+			await removeSubscription(interaction);
 		}
 	});
 };

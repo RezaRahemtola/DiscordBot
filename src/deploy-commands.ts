@@ -15,6 +15,10 @@ const commands = [
 				.setDescription("Channel ID where the notifications will be sent")
 				.setRequired(true),
 		),
+	new SlashCommandBuilder()
+		.setName("youtube-remove-subscription")
+		.setDescription("Remove a YouTube channel subscription")
+		.addStringOption((option) => option.setName("channel-id").setDescription("YouTube channel ID").setRequired(true)),
 ];
 
 const rest = new REST().setToken(BOT_TOKEN);
