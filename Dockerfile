@@ -32,4 +32,4 @@ RUN node dist/deploy-commands.js
 
 ENTRYPOINT ["npm", "run"]
 
-CMD ["start:prod"]
+CMD ["start"]

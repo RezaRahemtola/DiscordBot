@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start:dev": "ts-node src/index.ts",
-    "start:prod": "node ."
+    "dev": "ts-node src/index.ts",
+    "start": "node ."
   },
   "author": "Reza Rahentola",
   "license": "MIT",
