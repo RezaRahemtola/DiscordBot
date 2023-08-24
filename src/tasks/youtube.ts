@@ -3,7 +3,6 @@ import Parser from "rss-parser";
 import { z } from "zod";
 
 import client from "../client";
-import { YTB_CHANNEL_IDS, YTB_DISCORD_CHANNEL_ID } from "../config";
 import prisma from "../db/client";
 import isTextChannel from "../utils";
 
@@ -25,7 +24,7 @@ const checkVideos = async (rssURL: string) => {
 	// If there isn't any video, return
 	if (!lastVideo) return undefined;
 
-	const dbVideo = await prisma.videos.findUnique({ where: { id: lastVideo.id } });
+	const dbVideo = await prisma.youtubeVideo.findUnique({ where: { id: lastVideo.id } });
 	if (dbVideo) return undefined;
 
 	return lastVideo;
@@ -40,25 +39,27 @@ const checkYoutubeVideos = async () => {
 		link: z.string(),
 	});
 
+	const channels = await prisma.youtubeChannelSubscription.findMany();
+
 	await Promise.all(
-		YTB_CHANNEL_IDS.map(async (channelId) => {
-			const info = await checkVideos(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`);
+		channels.map(async (channel) => {
+			const info = await checkVideos(`https://www.youtube.com/feeds/videos.xml?channel_id=${channel.id}`);
 			if (!info) return;
 
 			try {
 				const video = videoSchema.parse(info);
-				await prisma.videos.create({ data: video });
+				await prisma.youtubeVideo.create({ data: video });
 
-				const channel = client.channels.cache.get(YTB_DISCORD_CHANNEL_ID);
-				if (!channel || !isTextChannel(channel)) {
-					console.error(`[YouTube][${channelId}] Channel not found`);
+				const outputChannel = client.channels.cache.get(channel.outputChannelId);
+				if (!outputChannel || !isTextChannel(outputChannel)) {
+					console.error(`[YouTube][${channel.id}] Channel not found`);
 					return;
 				}
-				channel.send({ content: `${video.author} just uploaded a video, go check it out! ${video.link}` });
+				outputChannel.send({ content: `${video.author} just uploaded a video, go check it out! ${video.link}` });
 			} catch {
-				console.error(`[YouTube][${channelId}] Video has the wrong format.`);
+				console.error(`[YouTube][${channel.id}] Video has the wrong format.`);
 			}
-		})
+		}),
 	);
 };
 

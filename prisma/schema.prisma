@@ -10,10 +10,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Videos {
+model YoutubeVideo {
   id      String @id @unique
   title   String
   author  String
   pubDate String
   link    String
+}
+
+model YoutubeChannelSubscription {
+  id              String @id @unique
+  outputChannelId String
 }
