@@ -47,7 +47,7 @@ const addSubscription = async (interaction: ChatInputCommandInteraction) => {
 
 	try {
 		await prisma.youtubeChannelSubscription.create({ data: { id: channelId, outputChannelId: outputDiscordId } });
-		await interaction.reply({ content: "Channel successfully added." });
+		await interaction.editReply({ content: "Channel successfully added." });
 	} catch (error) {
 		console.error(`[YouTube] Add subscription - ${error}`);
 		await interaction.editReply("An unknown error occurred, try again or contact the administrator.");
@@ -61,7 +61,7 @@ const removeSubscription = async (interaction: ChatInputCommandInteraction) => {
 
 	try {
 		await prisma.youtubeChannelSubscription.delete({ where: { id: channelId } });
-		await interaction.reply({ content: "Channel successfully removed." });
+		await interaction.editReply({ content: "Channel successfully removed." });
 	} catch (error) {
 		console.error(`[YouTube] Remove subscription - ${error}`);
 		await interaction.editReply("An unknown error occurred, try again or contact the administrator.");
