@@ -3,7 +3,23 @@ import { Routes, SlashCommandBuilder } from "discord.js";
 
 import { APP_ID, BOT_TOKEN, GUILD_ID } from "./config";
 
-const commands = [new SlashCommandBuilder().setName("list-youtube").setDescription("List YouTube subscriptions")];
+const commands = [
+	new SlashCommandBuilder().setName("youtube-list").setDescription("List YouTube subscriptions"),
+	new SlashCommandBuilder()
+		.setName("youtube-add-subscription")
+		.setDescription("Add a YouTube channel subscription")
+		.addStringOption((option) => option.setName("channel-id").setDescription("YouTube channel ID").setRequired(true))
+		.addStringOption((option) =>
+			option
+				.setName("output-discord-id")
+				.setDescription("Channel ID where the notifications will be sent")
+				.setRequired(true),
+		),
+	new SlashCommandBuilder()
+		.setName("youtube-remove-subscription")
+		.setDescription("Remove a YouTube channel subscription")
+		.addStringOption((option) => option.setName("channel-id").setDescription("YouTube channel ID").setRequired(true)),
+];
 
 const rest = new REST().setToken(BOT_TOKEN);
 (async () => {
