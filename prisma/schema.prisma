@@ -23,6 +23,6 @@ model YoutubeChannelSubscription {
   outputChannelId String
 }
 
-model ChannelCounter {
+model CounterChannel {
   id String @id @unique
 }
