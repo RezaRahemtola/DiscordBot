@@ -17,8 +17,6 @@ const formatChannels = (items: TResponseItems, youtubeChannels: YoutubeChannelSu
 	});
 
 const listYoutube = async (interaction: ChatInputCommandInteraction) => {
-	await interaction.reply({ content: "Loading..." });
-
 	const schema = z.object({
 		items: ZSchemaResponseItems,
 	});
@@ -28,7 +26,7 @@ const listYoutube = async (interaction: ChatInputCommandInteraction) => {
 		const ids = youtubeChannels.map((channel) => channel.id);
 
 		if (ids.length === 0) {
-			await interaction.editReply({ content: "No subscription" });
+			await interaction.reply({ content: "No subscription" });
 			return;
 		}
 		const response = await axios.get("https://www.googleapis.com/youtube/v3/channels", {
@@ -37,39 +35,35 @@ const listYoutube = async (interaction: ChatInputCommandInteraction) => {
 		const data = schema.parse(response.data);
 		const channels = formatChannels(data.items, youtubeChannels);
 
-		await interaction.editReply({ content: channels.join("\n") });
+		await interaction.reply({ content: channels.join("\n") });
 	} catch (error) {
 		console.error(`[YouTube] Channel listing - ${error}`);
-		await interaction.editReply({ content: "An unknown error occurred, try again or contact the administrator." });
+		await interaction.reply({ content: "An unknown error occurred, try again or contact the administrator." });
 	}
 };
 
 const addSubscription = async (interaction: ChatInputCommandInteraction) => {
-	await interaction.reply({ content: "Loading..." });
-
 	const channelId = interaction.options.getString("channel-id")!;
 	const outputDiscordId = interaction.options.getString("output-discord-id")!;
 
 	try {
 		await prisma.youtubeChannelSubscription.create({ data: { id: channelId, outputChannelId: outputDiscordId } });
-		await interaction.editReply({ content: "Channel successfully added." });
+		await interaction.reply({ content: "Channel successfully added." });
 	} catch (error) {
 		console.error(`[YouTube] Add subscription - ${error}`);
-		await interaction.editReply("An unknown error occurred, try again or contact the administrator.");
+		await interaction.reply("An unknown error occurred, try again or contact the administrator.");
 	}
 };
 
 const removeSubscription = async (interaction: ChatInputCommandInteraction) => {
-	await interaction.reply({ content: "Loading..." });
-
 	const channelId = interaction.options.getString("channel-id")!;
 
 	try {
 		await prisma.youtubeChannelSubscription.delete({ where: { id: channelId } });
-		await interaction.editReply({ content: "Channel successfully removed." });
+		await interaction.reply({ content: "Channel successfully removed." });
 	} catch (error) {
 		console.error(`[YouTube] Remove subscription - ${error}`);
-		await interaction.editReply("An unknown error occurred, try again or contact the administrator.");
+		await interaction.reply("An unknown error occurred, try again or contact the administrator.");
 	}
 };
 
