@@ -1,11 +1,14 @@
 import { Events, Message, PartialMessage } from "discord.js";
 
 import client from "../client";
-import { COUNTER_CHANNEL_IDS } from "../config";
 import isTextChannel from "../utils";
+import prisma from "../db/client";
 
 const updateMessageCounterChannel = async (message: Message | PartialMessage) => {
-	if (COUNTER_CHANNEL_IDS.includes(message.channelId) && isTextChannel(message.channel)) {
+	const counterChannels = await prisma.counterChannel.findMany();
+	const channelIds = counterChannels.map((channel) => channel.id);
+
+	if (channelIds.includes(message.channelId) && isTextChannel(message.channel)) {
 		const { channel } = message;
 		await channel.messages.fetch();
 		const count = channel.messages.cache.map((x) => x).length;

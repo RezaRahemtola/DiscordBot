@@ -19,6 +19,16 @@ const commands = [
 		.setName("youtube-remove-subscription")
 		.setDescription("Remove a YouTube channel subscription")
 		.addStringOption((option) => option.setName("channel-id").setDescription("YouTube channel ID").setRequired(true)),
+
+	new SlashCommandBuilder().setName("counter-list").setDescription("List channel counters"),
+	new SlashCommandBuilder()
+		.setName("counter-add")
+		.setDescription("Add a Counter channel")
+		.addStringOption((option) => option.setName("channel-id").setDescription("Discord channel ID").setRequired(true)),
+	new SlashCommandBuilder()
+		.setName("counter-remove")
+		.setDescription("Remove a Counter channel")
+		.addStringOption((option) => option.setName("channel-id").setDescription("Discord channel ID").setRequired(true)),
 ];
 
 const rest = new REST().setToken(BOT_TOKEN);
