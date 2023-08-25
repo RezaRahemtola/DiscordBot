@@ -2,6 +2,7 @@ import axios from "axios";
 import { ChatInputCommandInteraction, Events, Interaction } from "discord.js";
 import { z } from "zod";
 
+import { YoutubeChannelSubscription } from "@prisma/client";
 import client from "../client";
 import { YTB_API_KEY } from "../config";
 import prisma from "../db/client";
@@ -9,7 +10,11 @@ import prisma from "../db/client";
 const ZSchemaResponseItems = z.array(z.object({ id: z.string(), snippet: z.object({ title: z.string() }) }));
 type TResponseItems = z.infer<typeof ZSchemaResponseItems>;
 
-const formatChannels = (items: TResponseItems) => items.map((item) => `- ${item.snippet.title} (ID: "${item.id}")`);
+const formatChannels = (items: TResponseItems, youtubeChannels: YoutubeChannelSubscription[]) =>
+	items.map((item) => {
+		const outputDiscordId = youtubeChannels.find((c) => c.id === item.id)?.outputChannelId;
+		return `- ${item.snippet.title} (Channel ID: \`${item.id}\`, sent in <#${outputDiscordId}>)`;
+	});
 
 const listYoutube = async (interaction: ChatInputCommandInteraction) => {
 	await interaction.reply({ content: "Loading..." });
@@ -30,7 +35,7 @@ const listYoutube = async (interaction: ChatInputCommandInteraction) => {
 			params: { key: YTB_API_KEY, part: "snippet", id: ids.join(",") },
 		});
 		const data = schema.parse(response.data);
-		const channels = formatChannels(data.items);
+		const channels = formatChannels(data.items, youtubeChannels);
 
 		await interaction.editReply({ content: channels.join("\n") });
 	} catch (error) {
