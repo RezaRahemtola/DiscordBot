@@ -22,3 +22,7 @@ model YoutubeChannelSubscription {
   id              String @id @unique
   outputChannelId String
 }
+
+model ChannelCounter {
+  id String @id @unique
+}
