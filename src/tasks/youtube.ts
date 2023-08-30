@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import client from "../client";
 import prisma from "../db/client";
-import isTextChannel from "../utils";
+import { isTextChannel } from "../types/discord";
 
 const parser = new Parser();
 

@@ -1,10 +1,8 @@
 import { ChatInputCommandInteraction, Client, Events, Interaction } from "discord.js";
-import { CounterChannel, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 import { ICommandGroup } from "../types/commands";
-
-const formatCounterChannels = (counterChannels: CounterChannel[]) =>
-	counterChannels.map((channel) => `- <#${channel.id}>`);
+import { formatCounterChannels } from "../formatters/counter";
 
 class CounterCommandGroup implements ICommandGroup {
 	constructor(

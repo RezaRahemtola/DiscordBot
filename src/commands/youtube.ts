@@ -1,19 +1,11 @@
 import axios from "axios";
 import { ChatInputCommandInteraction, Client, Events, Interaction } from "discord.js";
-import { z } from "zod";
 
-import { PrismaClient, YoutubeChannelSubscription } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { YTB_API_KEY } from "../config";
 import { ICommandGroup } from "../types/commands";
-
-const ZSchemaResponseItems = z.array(z.object({ id: z.string(), snippet: z.object({ title: z.string() }) }));
-type TResponseItems = z.infer<typeof ZSchemaResponseItems>;
-
-const formatChannels = (items: TResponseItems, youtubeChannels: YoutubeChannelSubscription[]) =>
-	items.map((item) => {
-		const outputDiscordId = youtubeChannels.find((c) => c.id === item.id)?.outputChannelId;
-		return `- ${item.snippet.title} (Channel ID: \`${item.id}\`, sent in <#${outputDiscordId}>)`;
-	});
+import { TYoutubeChannelsResponse } from "../types/youtube";
+import { formatYoutubeChannelsResponse } from "../formatters/youtube";
 
 class YoutubeSubscriptionCommandGroup implements ICommandGroup {
 	constructor(
@@ -37,10 +29,6 @@ class YoutubeSubscriptionCommandGroup implements ICommandGroup {
 	}
 
 	async list(interaction: ChatInputCommandInteraction) {
-		const schema = z.object({
-			items: ZSchemaResponseItems,
-		});
-
 		try {
 			const youtubeChannels = await this.dbClient.youtubeChannelSubscription.findMany();
 			const ids = youtubeChannels.map((channel) => channel.id);
@@ -49,11 +37,10 @@ class YoutubeSubscriptionCommandGroup implements ICommandGroup {
 				await interaction.reply({ content: "No subscription" });
 				return;
 			}
-			const response = await axios.get("https://www.googleapis.com/youtube/v3/channels", {
+			const response = await axios.get<TYoutubeChannelsResponse>("https://www.googleapis.com/youtube/v3/channels", {
 				params: { key: YTB_API_KEY, part: "snippet", id: ids.join(",") },
 			});
-			const data = schema.parse(response.data);
-			const channels = formatChannels(data.items, youtubeChannels);
+			const channels = formatYoutubeChannelsResponse(response.data.items, youtubeChannels);
 
 			await interaction.reply({ content: channels.join("\n") });
 		} catch (error) {
