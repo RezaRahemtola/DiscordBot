@@ -1,8 +1,8 @@
 import { Events, Message, PartialMessage } from "discord.js";
 
 import client from "../client";
-import isTextChannel from "../utils";
 import prisma from "../db/client";
+import { isTextChannel } from "../types/discord";
 
 const updateMessageCounterChannel = async (message: Message | PartialMessage) => {
 	const counterChannels = await prisma.counterChannel.findMany();
