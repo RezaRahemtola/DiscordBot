@@ -11,7 +11,7 @@ class YoutubeSubscriptionCommandGroup implements ICommandGroup {
 	constructor(
 		private client: Client,
 		private dbClient: PrismaClient,
-		private commandPrefix: string = "counter",
+		private commandPrefix: string = "youtube",
 	) {}
 
 	setup() {
