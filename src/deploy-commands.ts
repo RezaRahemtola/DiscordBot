@@ -6,7 +6,7 @@ import { APP_ID, BOT_TOKEN, GUILD_ID } from "./config";
 const commands = [
 	new SlashCommandBuilder().setName("youtube-list").setDescription("List YouTube subscriptions"),
 	new SlashCommandBuilder()
-		.setName("youtube-add-subscription")
+		.setName("youtube-add")
 		.setDescription("Add a YouTube channel subscription")
 		.addStringOption((option) => option.setName("channel-id").setDescription("YouTube channel ID").setRequired(true))
 		.addStringOption((option) =>
@@ -16,7 +16,7 @@ const commands = [
 				.setRequired(true),
 		),
 	new SlashCommandBuilder()
-		.setName("youtube-remove-subscription")
+		.setName("youtube-remove")
 		.setDescription("Remove a YouTube channel subscription")
 		.addStringOption((option) => option.setName("channel-id").setDescription("YouTube channel ID").setRequired(true)),
 
